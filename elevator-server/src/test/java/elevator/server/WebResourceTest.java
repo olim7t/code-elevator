@@ -3,6 +3,7 @@ package elevator.server;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 
@@ -201,6 +202,22 @@ public class WebResourceTest {
                         .buildPost(null).invoke();
             }
         }
+    }
+
+    @Test
+    public void should_import_players() throws URISyntaxException {
+//        FormDataMultiPart part = new FormDataMultiPart().field("file", getClass().getResourceAsStream("players.csv"), MediaType.TEXT_PLAIN_TYPE);
+//
+//        WebResource resource = Client.create().resource(url);
+//        String response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(String.class, part);
+//        assertEquals("Hello, World", response);
+//
+        elevatorServerRule.target.path("/players.csv").request().
+                buildPost(Entity.entity("\"player@provider.com\",\"player\",\"http://localhost\",-2", "text/csv")).invoke();
+
+        final Response leaderboard = elevatorServerRule.target.path("/leaderboard").request().buildGet().invoke();
+        assertThat(leaderboard.readEntity(String.class)).isEqualTo("???");
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     private String credentials(String user, String password) {

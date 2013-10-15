@@ -72,6 +72,16 @@ public class WebResource {
     }
 
     @POST
+    @Path("/players.csv")
+    @AdminAuthorization
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public void playersAsCSV(@FormDataParam("file") InputStream playersAsStream) throws IOException {
+        try (BufferedReader players = new BufferedReader(new InputStreamReader(playersAsStream))) {
+            System.out.println(players.readLine());
+        }
+    }
+
+    @POST
     @Path("/player/pause")
     @UserAuthorization
     public void pauseParticipant(@QueryParam("email") String email) {
